@@ -1,4 +1,12 @@
 const target = 2020;
+const testExpenses = [
+    1721,
+    979,
+    366,
+    299,
+    675,
+    1456,
+];
 const expenses = [
     1786,
     571,
@@ -202,20 +210,26 @@ const expenses = [
     1741,
 ]
 
+input = expenses;
+
 let expense1;
 let expense2;
+let expense3;
 let ans;
 
-for (let i = 0; i < expenses.length - 1; i++) {
-    for (let j = i + 1; j < expenses.length; j++) {
-        if (expenses[i] + expenses[j] === target) {
-            expense1 = expenses[i];
-            expense2 = expenses[j];
-            ans = expenses[i] * expenses[j];
-            break;
-        }
+for (let i = 0; i < input.length - 2; i++) {
+    for (let j = i + 1; j < input.length - 1; j++) {
+        for (let k = i + 2; k < input.length; k++)
+            if (input[i] + input[j] + input[k] === target) {
+                expense1 = input[i];
+                expense2 = input[j];
+                expense3 = input[k]
+                ans = input[i] * input[j] * input[k];
+                break;
+            }
+        if (ans) break;
     }
     if (ans) break;
 }
 
-console.log(ans ? `Answer is ${ans} with ${expense1} and ${expense2}.` : "No answer found.")
+console.log(ans ? `Answer is ${ans} with ${expense1}, ${expense2} and ${expense3}.` : "No answer found.");
