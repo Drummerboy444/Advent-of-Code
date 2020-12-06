@@ -18,4 +18,4 @@ print(total)
 
 # One-liner
 # with open("input.txt") as file:
-#     print(sum([len(reduce(lambda a, b: set(a) & set(b), group)) for group in (group.split() for group in file.read().split("\n\n"))]))
+#     print(sum((len(reduce(lambda a, b: set(a) & set(b), group.split())) for group in file.read().split("\n\n"))))
