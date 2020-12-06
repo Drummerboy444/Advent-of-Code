@@ -1,24 +1,21 @@
+from functools import reduce
+
 with open("input.txt") as file:
-    lines = file.readlines()
+    lines = [line[:-1] for line in file.readlines()]
 
 
 groups = [[]]
-current_group_index = 0
 for line in lines:
-    trimmed_line = line[:-1]
-    if trimmed_line:
-        groups[current_group_index].append(trimmed_line)
+    if line:
+        groups[-1].append(set(line))
     else:
         groups.append([])
-        current_group_index += 1
 
 
-sum = 0
-for group in groups:
-    group_answers = set()
-    for answers in group:
-        for answer in answers:
-            group_answers.add(answer)
-    sum += len(group_answers)
+total = sum(len(reduce(lambda a, b: a & b, group)) for group in groups)
 
-print(sum)
+print(total)
+
+# One-liner
+# with open("input.txt") as file:
+#     print(sum([len(reduce(lambda a, b: set(a) & set(b), group)) for group in (group.split() for group in file.read().split("\n\n"))]))
