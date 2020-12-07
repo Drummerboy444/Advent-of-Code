@@ -38,4 +38,17 @@ for colour in bag_children_lookup.keys():
     if can_contain_gold_bag(colour):
         total += 1
 
-print(total)
+print(f"Bags that can contain a gold bag: {total}")
+
+
+def number_of_bags_inside(colour):
+    total = 0
+
+    for child_bag in bag_children_lookup[colour]:
+        number_of_child_bags = child_bag[0]
+        total += number_of_child_bags + (number_of_child_bags * number_of_bags_inside(child_bag[1]))
+
+    return total
+
+
+print(f"Number of bags inside a gold bag: {number_of_bags_inside('shiny gold')}")
