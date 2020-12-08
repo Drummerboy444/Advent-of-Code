@@ -9,10 +9,20 @@ class Program:
         self._next_instruction_index = 0
         self._visited_instructions = []
 
+    def flip_instruction(self, index):
+        self._instructions[index].flip()
+
+    def run(self):
+        while not self.in_loop() and not self.finished():
+            self._run_next_instruction()
+
+    def finished(self):
+        return self._next_instruction_index >= len(self._instructions)
+
     def in_loop(self):
         return self._next_instruction_index in self._visited_instructions
 
-    def run_next_instruction(self):
+    def _run_next_instruction(self):
         instruction = self._instructions[self._next_instruction_index]
         operation = instruction.operation
         argument = instruction.argument

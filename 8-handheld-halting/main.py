@@ -3,9 +3,11 @@ from program import Program
 with open("input.txt") as file:
     lines = file.read().split("\n")[:-1]
 
-program = Program(lines)
-
-while not program.in_loop():
-    program.run_next_instruction()
-
-print(program.accumulator)
+for i in range(len(lines)):
+    program = Program(lines)
+    program.flip_instruction(i)
+    program.run()
+    if program.finished():
+        print(f"Successful program by flipping instruction {i}")
+        print(f"Accumulator {program.accumulator}")
+        break
