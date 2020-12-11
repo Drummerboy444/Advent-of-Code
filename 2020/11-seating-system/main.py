@@ -1,25 +1,52 @@
-def count_surrounding_occupied_seats(seats, row, col):
-    seats_to_check = []
+def is_valid_coordinate(row, col, rows, cols):
+    return 0 <= row < rows and 0 <= col < cols
+
+
+def get_visible_seat(seats, row, col, directions):
     rows = len(seats)
     cols = len(seats[0])
-    if row > 0:
-        seats_to_check.append(seats[row - 1][col])
-    if row < rows - 1:
-        seats_to_check.append(seats[row + 1][col])
-    if col > 0:
-        seats_to_check.append(seats[row][col - 1])
-    if col < cols - 1:
-        seats_to_check.append(seats[row][col + 1])
-    if row > 0 and col > 0:
-        seats_to_check.append(seats[row - 1][col - 1])
-    if row > 0 and col < cols - 1:
-        seats_to_check.append(seats[row - 1][col + 1])
-    if row < rows - 1 and col > 0:
-        seats_to_check.append(seats[row + 1][col - 1])
-    if row < rows - 1 and col < cols - 1:
-        seats_to_check.append(seats[row + 1][col + 1])
+    x_coordinate_change = 0
+    y_coordinate_change = 0
 
-    return sum(1 for seat_to_check in seats_to_check if seat_to_check is "#")
+    if "up" in directions:
+        y_coordinate_change -= 1
+    if "down" in directions:
+        y_coordinate_change += 1
+    if "left" in directions:
+        x_coordinate_change -= 1
+    if "right" in directions:
+        x_coordinate_change += 1
+
+    potential_row = row + x_coordinate_change
+    potential_col = col + y_coordinate_change
+    while is_valid_coordinate(potential_row, potential_col, rows, cols):
+        if seats[potential_row][potential_col] == "#":
+            return "#"
+        if seats[potential_row][potential_col] == "L":
+            return "L"
+        potential_row += x_coordinate_change
+        potential_col += y_coordinate_change
+
+    return None
+
+
+possible_directions = [
+    ["up"],
+    ["down"],
+    ["left"],
+    ["right"],
+    ["up", "left"],
+    ["down", "left"],
+    ["up", "right"],
+    ["down", "right"]
+]
+
+
+def count_visible_occupied_seats(seats, row, col):
+    return sum(
+        1 for directions in possible_directions
+        if get_visible_seat(seats, row, col, directions) == "#"
+    )
 
 
 def calculate_next_seats(current_seats, tolerance):
@@ -34,7 +61,7 @@ def calculate_next_seats(current_seats, tolerance):
                 next_seats[i][j] = "."
                 continue
 
-            surrounding_occupied_seats = count_surrounding_occupied_seats(current_seats, i, j)
+            surrounding_occupied_seats = count_visible_occupied_seats(current_seats, i, j)
             if current_seat == "L":
                 if surrounding_occupied_seats == 0:
                     next_seats[i][j] = "#"
@@ -63,11 +90,8 @@ with open("input.txt") as file:
     seats = [list(line) for line in file.read().split()]
 
 current_seats = seats
-next_seats, any_change = calculate_next_seats(current_seats, 4)
-changes = 1
+next_seats, any_change = calculate_next_seats(current_seats, 5)
 while any_change:
-    next_seats, any_change = calculate_next_seats(next_seats, 4)
-    if any_change:
-        changes += 1
+    next_seats, any_change = calculate_next_seats(next_seats, 5)
 
 print(count_occupied_seats(next_seats))
