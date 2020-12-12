@@ -14,6 +14,15 @@ class Position(NamedTuple):
     def __add__(self, other):
         return Position(self.x + other.x, self.y + other.y)
 
+    def __mul__(self, other):
+        return Position(self.x * other, self.y * other)
+
+    def __rmul__(self, other):
+        return Position(self.x * other, self.y * other)
+
+    def __neg__(self):
+        return Position(-self.x, -self.y)
+
     def get_manhattan_distance(self):
         return abs(self.x) + abs(self.y)
 
@@ -30,8 +39,8 @@ with open("input.txt") as file:
     lines = file.read().split()
 
 instructions = [to_instruction(raw_instruction) for raw_instruction in lines]
-position = Position(0, 0)
-facing = 0
+ship = Position(0, 0)
+waypoint = Position(10, 1)
 
 direction_to_position_change = {
     "N": lambda m: Position(0, m),
@@ -41,15 +50,8 @@ direction_to_position_change = {
 }
 
 rotation_to_facing_change = {
-    "R": lambda m: m,
-    "L": lambda m: -m
-}
-
-facing_to_direction = {
-    0: "E",
-    90: "S",
-    180: "W",
-    270: "N"
+    "R": lambda m: m % 360,
+    "L": lambda m: -m % 360
 }
 
 for instruction in instructions:
@@ -57,13 +59,17 @@ for instruction in instructions:
     magnitude = instruction.magnitude
 
     if type in direction_to_position_change:
-        position += direction_to_position_change[type](magnitude)
+        waypoint += direction_to_position_change[type](magnitude)
     elif type in rotation_to_facing_change:
-        facing += rotation_to_facing_change[type](magnitude)
-        facing = facing % 360
+        facing_change = rotation_to_facing_change[type](magnitude)
+        if facing_change == 90:
+            waypoint = Position(waypoint.y, -waypoint.x)
+        elif facing_change == 180:
+            waypoint = -waypoint
+        elif facing_change == 270:
+            waypoint = Position(-waypoint.y, waypoint.x)
     elif type == "F":
-        position += direction_to_position_change[facing_to_direction[facing]](magnitude)
+        ship += waypoint * magnitude
 
-
-print(position)
-print(position.get_manhattan_distance())
+print(ship)
+print(ship.get_manhattan_distance())
