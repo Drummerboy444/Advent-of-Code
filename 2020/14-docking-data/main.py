@@ -1,10 +1,38 @@
 import re
+from itertools import chain, combinations
 
 
 def apply_mask(value, mask):
     ones = int(mask.replace("X", "0"), 2)
     zeros = int(mask.replace("X", "1"), 2)
     return (value | ones) & zeros
+
+
+def get_memory_addresses(value, decoder):
+    binary_value_list = list(format(value, "36b").replace(" ", "0"))
+    for i in range(36):
+        if decoder[i] == "1":
+            binary_value_list[i] = "1"
+        elif decoder[i] == "X":
+            binary_value_list[i] = "X"
+
+    x_indexes = [i for i in range(36) if binary_value_list[i] == "X"]
+    x_index_combinations = [combinations(x_indexes, r) for r in range(len(x_indexes) + 1)]
+    flat_x_index_combinations = []
+
+    for x_index_combination in x_index_combinations:
+        for single_combination in x_index_combination:
+            flat_x_index_combinations.append(single_combination)
+
+    memory_addresses = []
+    for x_index_combination in flat_x_index_combinations:
+        for x_index in x_indexes:
+            if x_index in x_index_combination:
+                binary_value_list[x_index] = "0"
+            else:
+                binary_value_list[x_index] = "1"
+        memory_addresses.append(int("".join(binary_value_list), 2))
+    return memory_addresses
 
 
 with open("input.txt") as file:
@@ -28,7 +56,7 @@ for line in lines:
         instructions.append(["memory", location, value])
 
 memory = {}
-mask = "X"*36
+mask = None
 
 for instruction in instructions:
     type = instruction[0]
@@ -41,4 +69,21 @@ for instruction in instructions:
         masked_value = apply_mask(value, mask)
         memory[location] = masked_value
 
-print(sum(memory.values()))
+print(f"Part 1: {sum(memory.values())}")
+
+memory = {}
+decoder = None
+
+for instruction in instructions:
+    type = instruction[0]
+
+    if type == "mask":
+        decoder = instruction[1]
+    elif type == "memory":
+        location = instruction[1]
+        value = instruction[2]
+        addresses = get_memory_addresses(location, decoder)
+        for address in addresses:
+            memory[address] = value
+
+print(f"Part 2: {sum(memory.values())}")
