@@ -1,6 +1,8 @@
 import re
 from typing import NamedTuple
 
+from math import prod
+
 
 class Rule(NamedTuple):
     field: str
@@ -50,9 +52,57 @@ def is_invalid(value):
 
 
 ticket_scanning_error_rate = 0
+valid_tickets = []
 for ticket in nearby_tickets:
+    valid = True
     for value in ticket:
         if is_invalid(value):
             ticket_scanning_error_rate += value
+            valid = False
+    if valid:
+        valid_tickets.append(ticket)
 
-print(ticket_scanning_error_rate)
+print(f"Part 1: {ticket_scanning_error_rate}")
+
+
+ticket_index_to_rule_index = {}
+for i in range(len(rules)):
+    ticket_index_to_rule_index[i] = [i for i in range(len(rules))]
+
+
+for i in range(len(valid_tickets)):
+    ticket = valid_tickets[i]
+    for j in range(len(ticket)):
+        value = ticket[j]
+        for k in range(len(rules)):
+            rule = rules[k]
+            if not is_valid_value(value, rule) and k in ticket_index_to_rule_index[j]:
+                ticket_index_to_rule_index[j].remove(k)
+
+
+rule_to_ticket_index = {}
+
+
+def can_reduce(dictionary):
+    return any(len(value) == 1 for value in dictionary.values())
+
+
+def reduce(dictionary):
+    to_remove = None
+    for key in dictionary:
+        value = dictionary[key]
+        if len(value) == 1:
+            to_remove = [key, value[0]]
+            rule_to_ticket_index[value[0]] = key
+
+    del dictionary[to_remove[0]]
+    for key in dictionary:
+        value = dictionary[key]
+        if to_remove[1] in value:
+            value.remove(to_remove[1])
+
+
+while can_reduce(ticket_index_to_rule_index):
+    reduce(ticket_index_to_rule_index)
+
+print(f"Part 2: {prod(my_ticket[rule_to_ticket_index[i]] for i in range(6))}")
