@@ -48,4 +48,43 @@ for instruction in instructions:
     else:
         tiles_to_flip.append(tile)
 
-print(len(tiles_to_flip))
+print(f"Part 1: {len(tiles_to_flip)}")
+
+
+def get_adjacent_tiles(tile):
+    return [
+        [tile[0] + 1, tile[1]],
+        [tile[0] - 1, tile[1]],
+        [tile[0] + 1, tile[1] + 1],
+        [tile[0], tile[1] + 1],
+        [tile[0], tile[1] - 1],
+        [tile[0] - 1, tile[1] - 1]
+    ]
+
+
+def count_adjacent_black_tiles(tile, black_tiles):
+    adjacent_tiles = get_adjacent_tiles(tile)
+    count = 0
+    for adjacent_tile in adjacent_tiles:
+        if adjacent_tile in black_tiles:
+            count += 1
+    return count
+
+
+black_tiles = tiles_to_flip
+
+for _ in range(100):
+    next_generation = []
+    for tile in black_tiles:
+        adjacent_black_tiles = count_adjacent_black_tiles(tile, black_tiles)
+        if adjacent_black_tiles == 1 or adjacent_black_tiles == 2:
+            next_generation.append(tile)
+        adjacent_tiles = get_adjacent_tiles(tile)
+        for adjacent_tile in adjacent_tiles:
+            if adjacent_tile not in black_tiles:
+                adjacent_black_tiles = count_adjacent_black_tiles(adjacent_tile, black_tiles)
+                if adjacent_black_tiles == 2 and adjacent_tile not in next_generation:
+                    next_generation.append(adjacent_tile)
+    black_tiles = next_generation
+
+print(f"Part 2: {len(black_tiles)}")
