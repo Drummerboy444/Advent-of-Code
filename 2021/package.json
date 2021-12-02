@@ -1,0 +1,16 @@
+{
+  "name": "2021",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "1": "ts-node src/1-sonar-sweep/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.11.11",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  }
+}
