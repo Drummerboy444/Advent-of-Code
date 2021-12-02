@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "1": "ts-node src/1-sonar-sweep/index.ts"
+    "day-1": "ts-node src/1-sonar-sweep/index.ts",
+    "day-2": "ts-node src/2-dive/index.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^16.11.11",
+    "fp-ts": "^2.11.5",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   }
