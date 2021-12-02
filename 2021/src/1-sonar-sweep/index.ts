@@ -1,23 +1,19 @@
+import * as A from "fp-ts/Array";
+import { pipe } from "fp-ts/function";
 import { readNumbers } from "../utils/file-reading";
 
 const depths = readNumbers("src/1-sonar-sweep/input.txt");
 
-let increases = 0;
+const countIncreases = (as: Array<number>, bs: Array<number>) =>
+  pipe(
+    as,
+    A.zip(bs),
+    A.filter(([a, b]) => b > a),
+    A.size
+  );
 
-for (let i = 1; i < depths.length; i++) {
-  if (depths[i] - depths[i - 1] > 0) {
-    increases++;
-  }
-}
+const [_, ...offsetDepths] = depths;
+console.log(`Part 1: ${countIncreases(depths, offsetDepths)}`);
 
-console.log(`Part 1: ${increases}`);
-
-let windowIncreases = 0;
-
-for (let i = 3; i < depths.length; i++) {
-  if (depths[i] - depths[i - 3] > 0) {
-    windowIncreases++;
-  }
-}
-
-console.log(`Part 2: ${windowIncreases}`);
+const [__, ___, ____, ...tripleOffsetDepths] = depths;
+console.log(`Part 2: ${countIncreases(depths, tripleOffsetDepths)}`);
