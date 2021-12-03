@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "es5",                          
     "module": "commonjs",                    
-    "lib": ["es6"],                     
+    "lib": ["es6"], 
+    // "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noErrorTruncation": true,                    
     "allowJs": true,
     "strict": true,         
     "noImplicitAny": true,
