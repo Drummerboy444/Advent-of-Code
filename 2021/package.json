@@ -6,7 +6,8 @@
   "scripts": {
     "day-1": "ts-node src/1-sonar-sweep/index.ts",
     "day-2": "ts-node src/2-dive/index.ts",
-    "day-3": "ts-node src/3-binary-diagnostic/index.ts"
+    "day-3": "ts-node src/3-binary-diagnostic/index.ts",
+    "day-4": "ts-node src/4-giant-squid/index.ts"
   },
   "author": "",
   "license": "ISC",
