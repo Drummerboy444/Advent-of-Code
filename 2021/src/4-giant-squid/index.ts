@@ -35,9 +35,14 @@ const containsWinningColumn = (card: Card): boolean =>
 const isWinner = (card: Card) =>
   containsWinningRow(card) || containsWinningColumn(card)
 
-const tryGetWinner: (cards: Array<Card>) => Card | null = (cards) =>
+const tryGetWinner = (cards: Array<Card>) =>
   pipe(cards, A.filter(isWinner), (winners) =>
     winners.length == 1 ? winners[0] : null,
+  )
+
+const tryGetLoser: (cards: Array<Card>) => Card | null = (cards) =>
+  pipe(cards, A.filter(P.not(isWinner)), (losers) =>
+    losers.length == 1 ? losers[0] : null,
   )
 
 const getNextRow: (instruction: number) => (row: Row) => Row = (instruction) =>
@@ -48,9 +53,7 @@ const getNextRow: (instruction: number) => (row: Row) => Row = (instruction) =>
     return number == instruction ? "X" : number
   })
 
-const getNextCard: (instruction: number) => (card: Card) => Card = (
-  instruction,
-) => RONEA.map(getNextRow(instruction))
+const getNextCard = (instruction: number) => RONEA.map(getNextRow(instruction))
 
 const getNextCards: (
   instruction: number,
@@ -74,6 +77,24 @@ for (let i = 0; i < instructions.length; i++) {
   const winningCard = tryGetWinner(scoredCards)
   if (winningCard) {
     console.log(`Part 1: ${getScore(winningCard) * instruction}`)
+    break
+  }
+}
+
+scoredCards = cards
+for (let i = 0; i < instructions.length; i++) {
+  let instruction = instructions[i]
+  scoredCards = getNextCards(instruction)(scoredCards)
+  let losingCard = tryGetLoser(scoredCards)
+
+  if (losingCard) {
+    while (!isWinner(losingCard)) {
+      i++
+      instruction = instructions[i]
+      losingCard = getNextCard(instruction)(losingCard)
+    }
+
+    console.log(`Part 2: ${getScore(losingCard) * instruction}`)
     break
   }
 }
