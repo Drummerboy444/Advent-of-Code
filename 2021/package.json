@@ -11,7 +11,8 @@
     "day-5": "ts-node src/5-hydrothermal-venture/index.ts",
     "day-6": "ts-node src/6-lanternfish/index.ts",
     "day-7": "ts-node src/7-the-treachery-of-whales/index.ts",
-    "day-8": "ts-node src/8-seven-segment-search/index.ts"
+    "day-8": "ts-node src/8-seven-segment-search/index.ts",
+    "day-9": "ts-node src/9-smoke-basin/index.ts"
   },
   "author": "",
   "license": "ISC",
