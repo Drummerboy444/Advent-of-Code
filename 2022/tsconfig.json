@@ -3,13 +3,13 @@
     "target": "es5",
     "module": "commonjs",
     "lib": ["es6"],
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": false,
     "noUnusedLocals": true,
     "noErrorTruncation": true,
     "allowJs": false,
     "strict": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   }
 }

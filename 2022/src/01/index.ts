@@ -1,7 +1,29 @@
 import { readLines } from "../utils/file-reading";
+import { sortNumbers } from "../utils/sorting";
 
-const lines = readLines(1);
-const mappedLines = readLines(1, (line) => Number(line));
+const chunkLines = (lines: string[]) => {
+  const elves: number[][] = [[]];
 
-console.log("Input:", lines);
-console.log("Mapped input:", mappedLines);
+  for (const line of lines) {
+    if (line === "") {
+      elves.push([]);
+    } else {
+      elves[elves.length - 1].push(Number(line));
+    }
+  }
+
+  return elves;
+};
+
+const sumCalories = (calories: number[]) => calories.reduce((a, b) => a + b, 0);
+
+const elves = chunkLines(readLines(1));
+const caloryTotals = elves.map(sumCalories);
+const sortedCaloryTotals = sortNumbers(caloryTotals, "desc");
+
+const first = sortedCaloryTotals[0];
+const second = sortedCaloryTotals[1];
+const third = sortedCaloryTotals[2];
+
+console.log("Part 1:", first);
+console.log("Part 2:", first + second + third);
