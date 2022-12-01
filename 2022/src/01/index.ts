@@ -17,7 +17,8 @@ const chunkLines = (lines: string[]) => {
 
 const sumCalories = (calories: number[]) => calories.reduce((a, b) => a + b, 0);
 
-const elves = chunkLines(readLines(1));
+const lines = readLines("src/01/input.txt");
+const elves = chunkLines(lines);
 const caloryTotals = elves.map(sumCalories);
 const sortedCaloryTotals = sortNumbers(caloryTotals, "desc");
 
