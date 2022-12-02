@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "01": "ts-node src/01/index.ts"
+    "01": "ts-node src/01/index.ts",
+    "02": "ts-node src/02/index.ts"
   },
   "author": "",
   "license": "ISC",
