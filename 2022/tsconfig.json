@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["es6"],
     "noUncheckedIndexedAccess": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noErrorTruncation": true,
     "allowJs": false,
     "strict": true,
