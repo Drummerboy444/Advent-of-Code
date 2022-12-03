@@ -85,16 +85,16 @@ const calculateScore = ({
 
 const lines = readLines("src/02/input.txt", parseLines);
 
-const totalScorePart1 = lines
+export const part1 = lines
   .map(mapCodesToMovesPart1)
   .map(calculateScore)
   .reduce((a, b) => a + b, 0);
 
-console.log("Part 1:", totalScorePart1);
+console.log("Part 1:", part1);
 
-const totalScorePart2 = lines
+export const part2 = lines
   .map(mapCodesToMovesPart2)
   .map(calculateScore)
   .reduce((a, b) => a + b, 0);
 
-console.log("Part 2:", totalScorePart2);
+console.log("Part 2:", part2);

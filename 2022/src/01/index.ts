@@ -25,5 +25,8 @@ const first = sortedCaloryTotals[0];
 const second = sortedCaloryTotals[1];
 const third = sortedCaloryTotals[2];
 
-console.log("Part 1:", first);
-console.log("Part 2:", first + second + third);
+export const part1 = first;
+console.log("Part 1:", part1);
+
+export const part2 = first + second + third;
+console.log("Part 2:", part2);

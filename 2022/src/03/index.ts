@@ -27,10 +27,12 @@ const rucksackPriorities = rucksacks
   .map(getCommonLetter)
   .map(getLetterPriority);
 
-console.log("Part 1:", sumArray(rucksackPriorities));
+export const part1 = sumArray(rucksackPriorities);
+console.log("Part 1:", part1);
 
 const groupPriorities = chunksOf(lines, 3)
   .map(getCommonLetter)
   .map(getLetterPriority);
 
-console.log("Part 2:", sumArray(groupPriorities));
+export const part2 = sumArray(groupPriorities);
+console.log("Part 2:", part2);
