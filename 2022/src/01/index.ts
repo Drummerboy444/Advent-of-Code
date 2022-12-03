@@ -1,3 +1,4 @@
+import { sumArray } from "../utils/arrays";
 import { readLines } from "../utils/file-reading";
 import { sortNumbers } from "../utils/sorting";
 
@@ -15,11 +16,9 @@ const chunkLines = (lines: string[]) => {
   return elves;
 };
 
-const sumCalories = (calories: number[]) => calories.reduce((a, b) => a + b, 0);
-
 const lines = readLines("src/01/input.txt");
 const elves = chunkLines(lines);
-const caloryTotals = elves.map(sumCalories);
+const caloryTotals = elves.map(sumArray);
 const sortedCaloryTotals = sortNumbers(caloryTotals, "desc");
 
 const first = sortedCaloryTotals[0];
