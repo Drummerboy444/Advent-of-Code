@@ -10,3 +10,6 @@ export const chunksOf = <T>(arr: T[], size: number) => {
 
   return chunks;
 };
+
+export const range = (from: number, to: number) =>
+  Array.from({ length: to - from + 1 }, (_, i) => i + from);

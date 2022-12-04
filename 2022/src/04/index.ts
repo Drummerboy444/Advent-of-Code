@@ -1,60 +1,30 @@
+import { range } from "../utils/arrays";
 import { readLines } from "../utils/file-reading";
 
-const lines = readLines("src/04/input.txt");
+type RangePair = [number[], number[]];
 
-const parseRange = (range: string) => {
-  const split = range.split("-");
-
-  const numbers: number[] = [];
-
-  for (let i = Number(split[0]); i < Number(split[1]) + 1; i++) {
-    numbers.push(i);
-  }
-
-  return numbers;
+const parseToRange = (rawRange: string) => {
+  const split = rawRange.split("-");
+  return range(Number(split[0]), Number(split[1]));
 };
 
-const parseToRangePairs = (line: string) => {
+const parseToRangePair = (line: string): RangePair => {
   const split = line.split(",");
-  return [parseRange(split[0]), parseRange(split[1])];
+  return [parseToRange(split[0]), parseToRange(split[1])];
 };
 
-const doesRangeFullyContainOther = (range: number[][]) => {
-  const range1 = range[0];
-  const range2 = range[1];
+const isOneRangeFullyContainedInOther = ([first, second]: RangePair) =>
+  first.every((n) => second.includes(n)) ||
+  second.every((n) => first.includes(n));
 
-  if (range1.every((n) => range2.includes(n))) {
-    return true;
-  }
+const doRangesOverlap = ([first, second]: RangePair) =>
+  first.some((n) => second.includes(n));
 
-  if (range2.every((n) => range1.includes(n))) {
-    return true;
-  }
+const lines = readLines("src/04/input.txt");
+const rangePairs = lines.map(parseToRangePair);
 
-  return false;
-};
-
-const doRangesOverlap = (range: number[][]) => {
-  const range1 = range[0];
-  const range2 = range[1];
-
-  for (const n of range1) {
-    if (range2.includes(n)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const rangePairs = lines.map(parseToRangePairs);
-
-const fullyOverlappingRangePairs = rangePairs.filter(
-  doesRangeFullyContainOther
-);
-export const part1 = fullyOverlappingRangePairs.length;
+export const part1 = rangePairs.filter(isOneRangeFullyContainedInOther).length;
 console.log("Part 1:", part1);
 
-const partiallyOverlappingRangePairs = rangePairs.filter(doRangesOverlap);
-export const part2 = partiallyOverlappingRangePairs.length;
+export const part2 = rangePairs.filter(doRangesOverlap).length;
 console.log("Part 2:", part2);
