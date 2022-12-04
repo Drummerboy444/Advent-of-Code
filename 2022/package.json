@@ -8,7 +8,8 @@
     "__TEMPLATE": "ts-node src/__TEMPLATE__/index.ts",
     "01": "ts-node src/01/index.ts",
     "02": "ts-node src/02/index.ts",
-    "03": "ts-node src/03/index.ts"
+    "03": "ts-node src/03/index.ts",
+    "04": "ts-node src/04/index.ts"
   },
   "author": "",
   "license": "ISC",
