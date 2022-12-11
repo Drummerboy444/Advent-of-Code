@@ -31,18 +31,26 @@ const parseToMonkey = (rawMonkey: string): Monkey => {
   return { worryLevels, operation, divisibilityTest, ifTrue, ifFalse };
 };
 
-const getNextWorryLevel = (worryLevel: number, operation: Operation) => {
+const getNextWorryLevel = (
+  worryLevel: number,
+  operation: Operation,
+  withDivide: boolean
+) => {
   const modifier = operation[2] === "old" ? worryLevel : operation[2];
   const modifiedWorryLevel =
     operation[1] === "*" ? worryLevel * modifier : worryLevel + modifier;
-  return Math.floor(modifiedWorryLevel / 3);
+  return withDivide ? Math.floor(modifiedWorryLevel / 3) : modifiedWorryLevel;
 };
 
-const getItemPasses = (monkey: Monkey) => {
+const getItemPasses = (monkey: Monkey, withDivide: boolean) => {
   const itemPasses: Record<number, number[]> = {};
 
   monkey.worryLevels.forEach((worryLevel) => {
-    const nextWorryLevel = getNextWorryLevel(worryLevel, monkey.operation);
+    const nextWorryLevel = getNextWorryLevel(
+      worryLevel,
+      monkey.operation,
+      withDivide
+    );
     const nextMonkey =
       nextWorryLevel % monkey.divisibilityTest === 0
         ? monkey.ifTrue
@@ -54,13 +62,12 @@ const getItemPasses = (monkey: Monkey) => {
   return itemPasses;
 };
 
-const takeRound = (monkeys: Monkey[]) => {
+const takeRound = (monkeys: Monkey[], withDivide: boolean) => {
   const inspections: Record<number, number> = {};
-  monkeys.forEach((_, i) => (inspections[i] = 0));
 
   monkeys.forEach((monkey, i) => {
-    inspections[i] += monkey.worryLevels.length;
-    const itemPasses = getItemPasses(monkey);
+    inspections[i] = monkey.worryLevels.length;
+    const itemPasses = getItemPasses(monkey, withDivide);
 
     Object.entries(itemPasses).forEach(([k, v]) => {
       monkeys[Number(k)].worryLevels.push(...v);
@@ -72,22 +79,47 @@ const takeRound = (monkeys: Monkey[]) => {
   return inspections;
 };
 
+const getInspectionsAfter = (
+  monkeys: Monkey[],
+  rounds: number,
+  withDivide: boolean
+) => {
+  const inspections: Record<number, number> = {};
+  monkeys.forEach((_, i) => (inspections[i] = 0));
+
+  const divisibilityTestProduct = monkeys
+    .map(({ divisibilityTest }) => divisibilityTest)
+    .reduce((a, b) => a * b, 1);
+
+  for (let i = 0; i < rounds; i++) {
+    const roundInspections = takeRound(monkeys, withDivide);
+    Object.entries(roundInspections).forEach(([k, v]) => {
+      inspections[Number(k)] += v;
+    });
+
+    monkeys.forEach((monkey) => {
+      monkey.worryLevels = monkey.worryLevels.map(
+        (worryLevel) => worryLevel % divisibilityTestProduct
+      );
+    });
+  }
+
+  return inspections;
+};
+
 const monkeys = readFile("src/11/input.txt").split("\n\n").map(parseToMonkey);
-
-const inspections: Record<number, number> = {};
-monkeys.forEach((_, i) => (inspections[i] = 0));
-
-for (let i = 0; i < 20; i++) {
-  const roundInspections = takeRound(monkeys);
-  Object.entries(roundInspections).forEach(([k, v]) => {
-    inspections[Number(k)] += v;
-  });
-}
-
+const inspections = getInspectionsAfter(monkeys, 20, true);
 const sortedInspectionValues = sortNumbers(Object.values(inspections), "desc");
 
 export const part1 = sortedInspectionValues[0] * sortedInspectionValues[1];
 console.log("Part 1:", part1);
 
-export const part2 = 456;
+const monkeys2 = readFile("src/11/input.txt").split("\n\n").map(parseToMonkey);
+const inspections2 = getInspectionsAfter(monkeys2, 10_000, false);
+const sortedInspectionValues2 = sortNumbers(
+  Object.values(inspections2),
+  "desc"
+);
+
+export const part2 = sortedInspectionValues2[0] * sortedInspectionValues2[1];
 console.log("Part 2:", part2);

@@ -6,6 +6,6 @@ describe("Day 11", () => {
   });
 
   it("should solve part 2", () => {
-    expect(part2).toBe(456);
+    expect(part2).toBe(14081365540);
   });
 });
