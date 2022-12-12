@@ -64,7 +64,7 @@ const containsPosition = (
 const findShortestPathLength = (
   grid: number[][],
   startPosition: [number, number],
-  targetPosition: [number, number]
+  targetPositions: [number, number][]
 ) => {
   const visitedPositions: [number, number][] = [startPosition];
   let currentPositions: [number, number][] = [startPosition];
@@ -112,7 +112,11 @@ const findShortestPathLength = (
     currentPositions = nextPositions;
     shortestPathLength++;
 
-    if (containsPosition(currentPositions, targetPosition)) {
+    if (
+      currentPositions.some((potentialEnd) =>
+        containsPosition(targetPositions, potentialEnd)
+      )
+    ) {
       return shortestPathLength;
     }
   }
@@ -121,14 +125,25 @@ const findShortestPathLength = (
 const file = readFile("src/12/inputs/input.txt");
 const { grid, startPosition, targetPosition } = parseFile(file);
 
-const shortestPath = findShortestPathLength(
-  grid,
-  startPosition,
-  targetPosition
-);
-
-export const part1 = shortestPath;
+export const part1 = findShortestPathLength(grid, startPosition, [
+  targetPosition,
+]);
 console.log("Part 1:", part1);
 
-export const part2 = 456;
+const invertedGrid = grid.map((row) =>
+  row.map((cell) => (cell === 999 ? 999 : 25 - cell))
+);
+
+const targetPositionsDown: [number, number][] = [];
+grid.forEach((row, i) =>
+  row.forEach((cell, j) => {
+    if (cell === 0) targetPositionsDown.push([i, j]);
+  })
+);
+
+export const part2 = findShortestPathLength(
+  invertedGrid,
+  targetPosition,
+  targetPositionsDown
+);
 console.log("Part 2:", part2);

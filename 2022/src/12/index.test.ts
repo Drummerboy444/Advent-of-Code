@@ -6,6 +6,6 @@ describe("Day 12", () => {
   });
 
   it("should solve part 2", () => {
-    expect(part2).toBe(456);
+    expect(part2).toBe(451);
   });
 });
