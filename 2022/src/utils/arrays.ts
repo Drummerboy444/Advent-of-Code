@@ -1,5 +1,7 @@
 export const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
+export const productArray = (arr: number[]) => arr.reduce((a, b) => a * b, 1);
+
 export const chunksOf = <T>(arr: T[], size: number) => {
   const chunks: T[][] = [];
 
