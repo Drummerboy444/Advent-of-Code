@@ -18,7 +18,8 @@
     "10": "ts-node src/10/index.ts",
     "11": "ts-node src/11/index.ts",
     "12": "ts-node src/12/index.ts",
-    "13": "ts-node src/13/index.ts"
+    "13": "ts-node src/13/index.ts",
+    "14": "ts-node src/14/index.ts"
   },
   "author": "",
   "license": "ISC",
