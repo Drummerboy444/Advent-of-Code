@@ -1,9 +1,8 @@
-import { range, sumArray } from "../utils/arrays";
+import { range } from "../utils/arrays";
+import { Point } from "../utils/coordinate-system";
 import { readLines } from "../utils/file-reading";
-import { sortNumbers } from "../utils/sorting";
+import * as C from "../utils/coordinate-system";
 
-type CoordinateSystem = Record<number, Set<number>>;
-type Point = [number, number];
 type Path = Point[];
 
 const paths: Path[] = readLines("src/14/inputs/input.txt", (line) =>
@@ -33,114 +32,29 @@ const getPoints = (path: Path): Set<Point> => {
   return points;
 };
 
-const getCave = (paths: Path[]): CoordinateSystem => {
-  const cave: CoordinateSystem = {};
+const getCave = (paths: Path[]): C.CoordinateSystem<"#"> => {
+  const cave: C.CoordinateSystem<"#"> = {};
 
   paths.forEach((path) => {
     const points = getPoints(path);
 
     points.forEach(([x, y]) => {
-      if (!(x in cave)) cave[x] = new Set();
-      cave[x].add(y);
+      if (!C.contains(cave, x)) cave[x] = {};
+      cave[x][y] = "#";
     });
   });
 
   return cave;
 };
 
-const renderCave = (
-  cave: CoordinateSystem,
-  grainsOfSand: CoordinateSystem,
-  x1: number,
-  x2: number,
-  y1: number,
-  y2: number
-) => {
-  for (let y = y1; y <= y2; y++) {
-    for (let x = x1; x <= x2; x++) {
-      const containsGrainOfSand = x in grainsOfSand && grainsOfSand[x].has(y);
-      const containsCaveWall = x in cave && cave[x].has(y);
-
-      if (containsGrainOfSand && containsCaveWall) {
-        throw new Error(
-          `Coordinate contained both a grain of sand and a wall: (${x}, ${y})`
-        );
-      }
-
-      if (containsGrainOfSand) {
-        process.stdout.write("s");
-      } else if (containsCaveWall) {
-        process.stdout.write("█");
-      } else {
-        process.stdout.write(".");
-      }
-    }
-    process.stdout.write("\n");
-  }
-};
-
-const getMinX = (c: CoordinateSystem) =>
-  sortNumbers(Object.keys(c).map(Number), "asc")[0];
-
-const getMaxX = (c: CoordinateSystem) =>
-  sortNumbers(Object.keys(c).map(Number), "desc")[0];
-
-const getMaxY = (c: CoordinateSystem) =>
-  sortNumbers(
-    Object.values(c).flatMap((ys) => Array.from(ys)),
-    "desc"
-  )[0];
-
-const forEachPoint = (
-  c: CoordinateSystem,
-  callback: (point: Point) => void
-) => {
-  Object.entries(c)
-    .map(([x, ys]) => [Number(x), ys] as const)
-    .forEach(([x, ys]) => {
-      ys.forEach((y) => callback([x, y]));
-    });
-};
-
-const copyCoordinateSystem = (c: CoordinateSystem) => {
-  const copy: CoordinateSystem = {};
-  forEachPoint(c, ([x, y]) => {
-    if (!(x in copy)) copy[x] = new Set();
-    copy[x].add(y);
-  });
-  return copy;
-};
-
-const mergeCoordinateSystems = (c1: CoordinateSystem, c2: CoordinateSystem) => {
-  const c: CoordinateSystem = copyCoordinateSystem(c1);
-  forEachPoint(c2, ([x, y]) => {
-    if (!(x in c)) c[x] = new Set();
-    c[x].add(y);
-  });
-  return c;
-};
-
-const addPoint = (c: CoordinateSystem, [x, y]: Point) => {
-  const copy = copyCoordinateSystem(c);
-  if (!(x in copy)) copy[x] = new Set();
-  copy[x].add(y);
-  return copy;
-};
-
-const containsPoint = (c: CoordinateSystem, [x, y]: Point) =>
-  x in c && c[x].has(y);
-
-const countCoordinateSystem = (c: CoordinateSystem) =>
-  sumArray(Object.values(c).map((ys) => ys.size));
-
-const dropGrainOfSand = (
-  coordinateSystem: CoordinateSystem
+const dropGrainOfSand = <T>(
+  coordinateSystem: C.CoordinateSystem<T>
 ): Point | "no-resting-point" => {
   let point: Point = [500, 0];
 
-  const minX = getMinX(coordinateSystem);
-  const maxX = getMaxX(coordinateSystem);
-  const maxY = getMaxY(coordinateSystem);
+  const minX = C.minX(coordinateSystem);
+  const maxX = C.maxX(coordinateSystem);
+  const maxY = C.maxY(coordinateSystem);
 
   while (true) {
     const [x, y] = point;
@@ -152,9 +66,9 @@ const dropGrainOfSand = (
     const belowLeft: Point = [x - 1, y + 1];
     const belowRight: Point = [x + 1, y + 1];
 
-    const hasPointBelow = containsPoint(coordinateSystem, below);
-    const hasPointBelowLeft = containsPoint(coordinateSystem, belowLeft);
-    const hasPointBelowRight = containsPoint(coordinateSystem, belowRight);
+    const hasPointBelow = C.contains(coordinateSystem, below);
+    const hasPointBelowLeft = C.contains(coordinateSystem, belowLeft);
+    const hasPointBelowRight = C.contains(coordinateSystem, belowRight);
 
     if (hasPointBelow && hasPointBelowLeft && hasPointBelowRight) return point;
     else if (hasPointBelow && hasPointBelowLeft) point = belowRight;
@@ -164,33 +78,29 @@ const dropGrainOfSand = (
 };
 
 const dropGrainsOfSandUntilOverflowing = (
-  cave: CoordinateSystem
-): CoordinateSystem => {
-  let grainsOfSand: CoordinateSystem = {};
+  cave: C.CoordinateSystem<"#">
+): C.CoordinateSystem<"s"> => {
+  let grainsOfSand: C.CoordinateSystem<"s"> = {};
 
   while (true) {
-    const grainOfSand = dropGrainOfSand(
-      mergeCoordinateSystems(cave, grainsOfSand)
-    );
+    const grainOfSand = dropGrainOfSand(C.add(cave, grainsOfSand));
     if (grainOfSand === "no-resting-point") break;
-    grainsOfSand = addPoint(grainsOfSand, grainOfSand);
+    grainsOfSand = C.add(grainsOfSand, [grainOfSand, "s"]);
   }
 
   return grainsOfSand;
 };
 
 const dropGrainsOfSandUntilBlocked = (
-  cave: CoordinateSystem
-): CoordinateSystem => {
-  let grainsOfSand: CoordinateSystem = {};
+  cave: C.CoordinateSystem<"#">
+): C.CoordinateSystem<"s"> => {
+  let grainsOfSand: C.CoordinateSystem<"s"> = {};
 
   while (true) {
-    const grainOfSand = dropGrainOfSand(
-      mergeCoordinateSystems(cave, grainsOfSand)
-    );
+    const grainOfSand = dropGrainOfSand(C.add(cave, grainsOfSand));
     if (grainOfSand === "no-resting-point") break;
-    grainsOfSand = addPoint(grainsOfSand, grainOfSand);
-    if (containsPoint(grainsOfSand, [500, 0])) break;
+    grainsOfSand = C.add(grainsOfSand, [grainOfSand, "s"]);
+    if (C.contains(grainsOfSand, [500, 0])) break;
   }
 
   return grainsOfSand;
@@ -200,18 +110,18 @@ const cave = getCave(paths);
 
 const grainsOfSandBeforeOverflowing = dropGrainsOfSandUntilOverflowing(cave);
 
-export const part1 = countCoordinateSystem(grainsOfSandBeforeOverflowing);
+export const part1 = C.count(grainsOfSandBeforeOverflowing);
 console.log("Part 1:", part1);
 
-const maxY = getMaxY(cave);
+const maxY = C.maxY(cave);
 const caveFloor = getCave([
   [
     [-1_000, maxY + 2],
     [1_000, maxY + 2],
   ],
 ]);
-const caveWithFloor = mergeCoordinateSystems(cave, caveFloor);
+const caveWithFloor = C.add(cave, caveFloor);
 const grainsOfSandWhenBlocked = dropGrainsOfSandUntilBlocked(caveWithFloor);
 
-export const part2 = countCoordinateSystem(grainsOfSandWhenBlocked);
+export const part2 = C.count(grainsOfSandWhenBlocked);
 console.log("Part 2:", part2);
