@@ -52,9 +52,9 @@ const dropGrainOfSand = <T>(
 ): Point | "no-resting-point" => {
   let point: Point = [500, 0];
 
-  const minX = C.minX(coordinateSystem);
-  const maxX = C.maxX(coordinateSystem);
-  const maxY = C.maxY(coordinateSystem);
+  const minX = C.getMinX(coordinateSystem);
+  const maxX = C.getMaxX(coordinateSystem);
+  const maxY = C.getMaxY(coordinateSystem);
 
   while (true) {
     const [x, y] = point;
@@ -113,7 +113,7 @@ const grainsOfSandBeforeOverflowing = dropGrainsOfSandUntilOverflowing(cave);
 export const part1 = C.count(grainsOfSandBeforeOverflowing);
 console.log("Part 1:", part1);
 
-const maxY = C.maxY(cave);
+const maxY = C.getMaxY(cave);
 const caveFloor = getCave([
   [
     [-1_000, maxY + 2],
