@@ -1,11 +1,11 @@
-import { Point } from "../utils/coordinate-system";
 import { readLines } from "../utils/file-reading";
 import * as C from "../utils/coordinate-system";
+import * as P from "../utils/point";
 import { sortNumbers } from "../utils/sorting";
 
 type Location = {
-  sensor: Point;
-  beacon: Point;
+  sensor: P.Point;
+  beacon: P.Point;
 };
 type LocationWithManhattanDistance = Location & { manhattanDistance: number };
 
@@ -15,16 +15,16 @@ const locations: Location[] = readLines("src/15/inputs/input.txt", (line) => {
   const sensorXAndY = split[0].substring("Sensor at ".length);
   const sensorX = Number(sensorXAndY.split(", ")[0].substring(2));
   const sensorY = Number(sensorXAndY.split(", ")[1].substring(2));
-  const sensor: Point = [sensorX, sensorY];
+  const sensor: P.Point = [sensorX, sensorY];
 
   const beaconX = Number(split[1].split(", ")[0].substring(2));
   const beaconY = Number(split[1].split(", ")[1].substring(2));
-  const beacon: Point = [beaconX, beaconY];
+  const beacon: P.Point = [beaconX, beaconY];
 
   return { sensor, beacon };
 });
 
-const getManhattanDistance = ([x1, y1]: Point, [x2, y2]: Point) =>
+const getManhattanDistance = ([x1, y1]: P.Point, [x2, y2]: P.Point) =>
   Math.abs(x2 - x1) + Math.abs(y2 - y1);
 
 const toCoordinateSystem = (
@@ -48,7 +48,7 @@ const toCoordinateSystem = (
 
     for (let x = -manhattanDistance; x <= manhattanDistance; x++) {
       for (let y = -manhattanDistance; y <= manhattanDistance; y++) {
-        const point: Point = [sensor[0] + x, sensor[1] + y];
+        const point: P.Point = [sensor[0] + x, sensor[1] + y];
         const newManhattanDistance = getManhattanDistance(sensor, point);
         if (newManhattanDistance <= manhattanDistance) {
           coordinateSystem = C.add(

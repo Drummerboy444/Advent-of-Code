@@ -1,33 +1,27 @@
 import { sumArray } from "./arrays";
 import { sortNumbers } from "./sorting";
+import * as P from "./point";
 
 export type CoordinateSystem<T> = Record<number, Record<number, T>>;
-export type Point = [number, number];
-
-const isPoint = (p: unknown): p is Point =>
-  p instanceof Array &&
-  p.length === 2 &&
-  typeof p[0] === "number" &&
-  typeof p[1] === "number";
 
 type Contains = {
   <T>(c: CoordinateSystem<T>, x: number): boolean;
-  <T>(c: CoordinateSystem<T>, p: Point): boolean;
+  <T>(c: CoordinateSystem<T>, p: P.Point): boolean;
   <T>(
     c: CoordinateSystem<T>,
-    p: [Point, T],
+    p: [P.Point, T],
     equals?: (t1: T, t2: T) => boolean
   ): boolean;
 };
 
 export const contains: Contains = <T>(
   c: CoordinateSystem<T>,
-  other: number | Point | [Point, T],
+  other: number | P.Point | [P.Point, T],
   equals: (t1: T, t2: T) => boolean = (t1, t2) => t1 === t2
 ) => {
   if (typeof other === "number") return other in c;
 
-  if (isPoint(other)) {
+  if (P.is(other)) {
     const [x, y] = other;
     return x in c && y in c[x];
   }
@@ -36,7 +30,7 @@ export const contains: Contains = <T>(
   return x in c && y in c[x] && equals(c[x][y], t);
 };
 
-export const tryGet = <T>(c: CoordinateSystem<T>, [x, y]: Point) =>
+export const tryGet = <T>(c: CoordinateSystem<T>, [x, y]: P.Point) =>
   contains(c, [x, y]) ? c[x][y] : null;
 
 export const getMinX = <T>(c: CoordinateSystem<T>) =>
@@ -82,7 +76,7 @@ export const getColumn = <T>(c: CoordinateSystem<T>, x: number) => {
 
 export const foreach = <T>(
   c: CoordinateSystem<T>,
-  callback: (point: Point, t: T) => void
+  callback: (point: P.Point, t: T) => void
 ) => {
   Object.entries(c).forEach(([x, ys]) => {
     Object.entries(ys).forEach(([y, t]) => {
@@ -103,7 +97,7 @@ export const copy = <T>(c: CoordinateSystem<T>) => {
 type Add = {
   <T, U>(
     c: CoordinateSystem<T>,
-    p: [Point, U],
+    p: [P.Point, U],
     merge?: (t: T, u: U) => T | U
   ): CoordinateSystem<T | U>;
   <T, U>(
@@ -115,7 +109,7 @@ type Add = {
 
 export const add: Add = <T, U>(
   c: CoordinateSystem<T>,
-  other: [Point, U] | CoordinateSystem<U>,
+  other: [P.Point, U] | CoordinateSystem<U>,
   merge: (t: T, u: U) => T | U = (_, u) => u
 ) => {
   const newC: CoordinateSystem<T | U> = copy(c);
@@ -134,23 +128,37 @@ export const add: Add = <T, U>(
   return newC;
 };
 
+export const from = <T>(ps: P.Point[], toT: (p: P.Point) => T) => {
+  const c: CoordinateSystem<T> = {};
+
+  ps.forEach(([x, y]) => {
+    if (!contains(c, x)) c[x] = {};
+    c[x][y] = toT([x, y]);
+  });
+
+  return c;
+};
+
 export const render = <T>(
   c: CoordinateSystem<T>,
   renderItem: (t: T) => string,
-  boundary: {
-    x1: number;
-    x2: number;
-    y1: number;
-    y2: number;
-  }
+  {
+    x1 = getMinX(c),
+    x2 = getMaxX(c),
+    y1 = getMinY(c),
+    y2 = getMaxY(c),
+    yOrientation = "down" as "down" | "up",
+  } = {}
 ) => {
-  const { x1, x2, y1, y2 } = boundary;
-
+  const lines: string[] = [];
   for (let y = y1; y <= y2; y++) {
+    let line = "";
     for (let x = x1; x <= x2; x++) {
       const value = tryGet(c, [x, y]);
-      process.stdout.write(value === null ? "." : renderItem(value));
+      line += value === null ? "." : renderItem(value);
     }
-    process.stdout.write("\n");
+    lines.push(line);
   }
+  if (yOrientation === "up") lines.reverse();
+  lines.forEach((line) => console.log(line));
 };

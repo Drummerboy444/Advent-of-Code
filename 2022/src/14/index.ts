@@ -1,18 +1,18 @@
 import { range } from "../utils/arrays";
-import { Point } from "../utils/coordinate-system";
 import { readLines } from "../utils/file-reading";
 import * as C from "../utils/coordinate-system";
+import * as P from "../utils/point";
 
-type Path = Point[];
+type Path = P.Point[];
 
 const paths: Path[] = readLines("src/14/inputs/input.txt", (line) =>
   line
     .split(" -> ")
-    .map((coordinate) => coordinate.split(",").map(Number) as Point)
+    .map((coordinate) => coordinate.split(",").map(Number) as P.Point)
 );
 
-const getPoints = (path: Path): Set<Point> => {
-  const points = new Set<Point>();
+const getPoints = (path: Path): Set<P.Point> => {
+  const points = new Set<P.Point>();
 
   for (let i = 0; i < path.length - 1; i++) {
     const [x1, y1] = path[i];
@@ -20,11 +20,11 @@ const getPoints = (path: Path): Set<Point> => {
 
     if (x1 === x2) {
       range(y1 < y2 ? y1 : y2, y1 < y2 ? y2 : y1)
-        .map((y) => [x1, y] as Point)
+        .map((y) => [x1, y] as P.Point)
         .forEach((point) => points.add(point));
     } else {
       range(x1 < x2 ? x1 : x2, x1 < x2 ? x2 : x1)
-        .map((x) => [x, y1] as Point)
+        .map((x) => [x, y1] as P.Point)
         .forEach((point) => points.add(point));
     }
   }
@@ -49,8 +49,8 @@ const getCave = (paths: Path[]): C.CoordinateSystem<"#"> => {
 
 const dropGrainOfSand = <T>(
   coordinateSystem: C.CoordinateSystem<T>
-): Point | "no-resting-point" => {
-  let point: Point = [500, 0];
+): P.Point | "no-resting-point" => {
+  let point: P.Point = [500, 0];
 
   const minX = C.getMinX(coordinateSystem);
   const maxX = C.getMaxX(coordinateSystem);
@@ -62,9 +62,9 @@ const dropGrainOfSand = <T>(
     if (x > maxX) return "no-resting-point";
     if (y > maxY) return "no-resting-point";
 
-    const below: Point = [x, y + 1];
-    const belowLeft: Point = [x - 1, y + 1];
-    const belowRight: Point = [x + 1, y + 1];
+    const below: P.Point = [x, y + 1];
+    const belowLeft: P.Point = [x - 1, y + 1];
+    const belowRight: P.Point = [x + 1, y + 1];
 
     const hasPointBelow = C.contains(coordinateSystem, below);
     const hasPointBelowLeft = C.contains(coordinateSystem, belowLeft);
