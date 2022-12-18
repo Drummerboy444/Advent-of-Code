@@ -119,23 +119,8 @@ for (let x = minX; x <= maxX; x++) {
   );
   i += isWithin ? 1 : 0;
 }
-console.log(i);
-// const coordinateSystem = toCoordinateSystem(locations);
 
-// C.render(coordinateSystem, (s) => s, {
-//   x1: -2,
-//   x2: 25,
-//   y1: 0,
-//   y2: 22,
-// });
-
-// const row = C.getRow(coordinateSystem, 10)
-//   .map((value) => value ?? ".")
-//   .join("");
-// console.log("Row:");
-// console.log(row);
-
-export const part1 = 123;
+export const part1 = i;
 console.log("Part 1:", part1);
 
 export const part2 = 456;

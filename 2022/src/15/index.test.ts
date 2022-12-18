@@ -2,7 +2,7 @@ import { part1, part2 } from ".";
 
 describe("Day 15", () => {
   it("should solve part 1", () => {
-    expect(part1).toBe(123);
+    expect(part1).toBe(4560025);
   });
 
   it("should solve part 2", () => {
