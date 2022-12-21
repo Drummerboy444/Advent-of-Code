@@ -23,7 +23,8 @@
     "14": "ts-node src/14/index.ts",
     "15": "ts-node src/15/index.ts",
     "17": "ts-node src/17/index.ts",
-    "18": "ts-node src/18/index.ts"
+    "18": "ts-node src/18/index.ts",
+    "21": "ts-node src/21/index.ts"
   },
   "author": "",
   "license": "ISC",
