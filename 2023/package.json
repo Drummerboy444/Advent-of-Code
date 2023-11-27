@@ -1,7 +1,7 @@
 {
   "name": "2023",
   "scripts": {
-    "__TEMPLATE__": "ts-node src/__TEMPLATE__/index.ts",
+    "create-day": "ts-node create-day.ts",
     "01": "ts-node src/01/index.ts"
   },
   "devDependencies": {
