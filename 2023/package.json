@@ -4,7 +4,8 @@
     "create-day": "ts-node create-day.ts",
     "01": "ts-node src/01/index.ts",
     "02": "ts-node src/02/index.ts",
-    "03": "ts-node src/03/index.ts"
+    "03": "ts-node src/03/index.ts",
+    "04": "ts-node src/04/index.ts"
   },
   "devDependencies": {
     "@types/node": "^20.9.4",
