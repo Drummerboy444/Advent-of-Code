@@ -6,7 +6,8 @@
     "02": "ts-node src/02/index.ts",
     "03": "ts-node src/03/index.ts",
     "04": "ts-node src/04/index.ts",
-    "05": "ts-node src/05/index.ts"
+    "05": "ts-node src/05/index.ts",
+    "06": "ts-node src/06/index.ts"
   },
   "devDependencies": {
     "@types/node": "^20.9.4",
