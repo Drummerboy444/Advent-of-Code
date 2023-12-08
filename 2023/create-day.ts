@@ -24,7 +24,7 @@ if (
 
 const INDEX_FILE_CONTENT = `import { readLines } from "../utils/file-reading";
 
-const lines = readLines("src/${dayName}/inputs/input.txt");
+const lines = readLines("src/${dayName}/inputs/input.test.txt");
 `;
 
 mkdirSync(`src/${dayName}`);
