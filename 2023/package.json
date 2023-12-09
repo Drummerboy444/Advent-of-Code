@@ -9,7 +9,8 @@
     "05": "ts-node src/05/index.ts",
     "06": "ts-node src/06/index.ts",
     "07": "ts-node src/07/index.ts",
-    "08": "ts-node src/08/index.ts"
+    "08": "ts-node src/08/index.ts",
+    "09": "ts-node src/09/index.ts"
   },
   "devDependencies": {
     "@types/node": "^20.9.4",
