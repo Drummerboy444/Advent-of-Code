@@ -1,6 +1,7 @@
 {
   "name": "2023",
   "scripts": {
+    "10": "ts-node src/10/index.ts",
     "create-day": "ts-node create-day.ts",
     "01": "ts-node src/01/index.ts",
     "02": "ts-node src/02/index.ts",
