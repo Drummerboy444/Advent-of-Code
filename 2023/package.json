@@ -7,6 +7,7 @@
     "13": "ts-node src/13/index.ts",
     "14": "ts-node src/14/index.ts",
     "15": "ts-node src/15/index.ts",
+    "16": "ts-node src/16/index.ts",
     "create-day": "ts-node create-day.ts",
     "01": "ts-node src/01/index.ts",
     "02": "ts-node src/02/index.ts",

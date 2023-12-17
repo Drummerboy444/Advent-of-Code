@@ -32,6 +32,11 @@ export const getMaxY = <T>(c: CoordinateSystem<T>) =>
     )
   );
 
+export const addCoordinates = (
+  { x: x1, y: y1 }: Coordinate,
+  { x: x2, y: y2 }: Coordinate
+): Coordinate => ({ x: x1 + x2, y: y1 + y2 });
+
 export const toCoordinatesWithValues = <T>(c: CoordinateSystem<T>) => {
   const maxX = getMaxX(c);
   const maxY = getMaxY(c);
@@ -70,3 +75,21 @@ export const stringify = <T>(
   toCoordinatesWithValues(c)
     .map(({ value }) => toString(value))
     .join("");
+
+export const render = <T>(
+  c: CoordinateSystem<T>,
+  renderItem: (t: T) => string
+) => {
+  const maxX = getMaxX(c);
+  const maxY = getMaxY(c);
+
+  const lines: string[] = [];
+  for (let y = 0; y <= maxY; y++) {
+    let line = "";
+    for (let x = 0; x <= maxX; x++) {
+      line += renderItem(getValue(c, { x, y }));
+    }
+    lines.push(line);
+  }
+  lines.forEach((line) => console.log(line));
+};
