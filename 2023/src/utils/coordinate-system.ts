@@ -37,6 +37,16 @@ export const addCoordinates = (
   { x: x2, y: y2 }: Coordinate
 ): Coordinate => ({ x: x1 + x2, y: y1 + y2 });
 
+export const subtractCoordinates = (
+  { x: x1, y: y1 }: Coordinate,
+  { x: x2, y: y2 }: Coordinate
+): Coordinate => ({ x: x1 - x2, y: y1 - y2 });
+
+export const areEqualCoordinates = (
+  { x: x1, y: y1 }: Coordinate,
+  { x: x2, y: y2 }: Coordinate
+) => x1 === x2 && y1 === y2;
+
 export const toCoordinatesWithValues = <T>(c: CoordinateSystem<T>) => {
   const maxX = getMaxX(c);
   const maxY = getMaxY(c);
