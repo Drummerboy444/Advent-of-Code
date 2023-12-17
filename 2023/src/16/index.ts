@@ -131,17 +131,68 @@ const getEnergisedTiles = (
   }
 };
 
+const solvePart1 = (contraption: Contraption, startBeam: Beam) => {
+  const energisedTiles = new Set<string>();
+  getEnergisedTiles(startBeam, contraption, energisedTiles, new Set<string>());
+  return energisedTiles.size;
+};
+
+const solvePart2 = (contraption: Contraption) => {
+  const maxX = getMaxX(contraption);
+  const maxY = getMaxY(contraption);
+
+  const total = maxX + maxY;
+
+  let maxEnergisedTiles = -1;
+
+  for (let i = 0; i <= maxX; i++) {
+    console.log(`Calculating ${i} of ${total}`);
+
+    const topAnswer = solvePart1(contraption, {
+      position: { x: i, y: -1 },
+      direction: "DOWN",
+    });
+
+    if (topAnswer > maxEnergisedTiles) maxEnergisedTiles = topAnswer;
+
+    const bottomAnswer = solvePart1(contraption, {
+      position: { x: i, y: maxY + 1 },
+      direction: "UP",
+    });
+
+    if (bottomAnswer > maxEnergisedTiles) maxEnergisedTiles = bottomAnswer;
+  }
+
+  for (let i = 0; i <= maxY; i++) {
+    console.log(`Calculating ${maxX + i} of ${total}`);
+
+    const leftAnswer = solvePart1(contraption, {
+      position: { x: -1, y: i },
+      direction: "RIGHT",
+    });
+
+    if (leftAnswer > maxEnergisedTiles) maxEnergisedTiles = leftAnswer;
+
+    const rightAnswer = solvePart1(contraption, {
+      position: { x: maxX + 1, y: i },
+      direction: "LEFT",
+    });
+
+    if (rightAnswer > maxEnergisedTiles) maxEnergisedTiles = rightAnswer;
+  }
+
+  return maxEnergisedTiles;
+};
+
 const lines = readLines("src/16/inputs/input.txt");
 const contraption = parseLinesToContraption(lines);
-const energisedTiles = new Set<string>();
-getEnergisedTiles(
-  {
+
+console.log(
+  "Part 1:",
+  solvePart1(contraption, {
     position: { x: -1, y: 0 },
     direction: "RIGHT",
-  },
-  contraption,
-  energisedTiles,
-  new Set<string>()
+  })
 );
 
-console.log(energisedTiles.size);
+console.log("Part 2:", solvePart2(contraption));
