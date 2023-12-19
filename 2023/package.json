@@ -10,6 +10,7 @@
     "16": "ts-node src/16/index.ts",
     "17": "ts-node src/17/index.ts",
     "18": "ts-node src/18/index.ts",
+    "19": "ts-node src/19/index.ts",
     "create-day": "ts-node create-day.ts",
     "01": "ts-node src/01/index.ts",
     "02": "ts-node src/02/index.ts",
