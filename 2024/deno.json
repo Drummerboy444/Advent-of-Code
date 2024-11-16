@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "day": "deno run --allow-read day.ts",
+    "create": "deno run --allow-write create.ts"
+  },
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true
+  }
+}
